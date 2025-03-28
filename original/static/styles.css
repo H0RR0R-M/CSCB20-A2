@@ -1,0 +1,286 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* CSS Variables for Light/Dark Mode */
+:root {
+    --bg-color: white;
+    --text-color: black;
+    --nav-bg: #0056b3;
+    --nav-hover: #004494;
+    --section-bg: #afcded;
+    --footer-bg: #333;    
+}
+  
+/* Body & General Styling */
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Sticky Header */
+header {
+    position: sticky;
+    top: 0;
+    background: var(--nav-bg);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    z-index: 1000;
+}
+
+/* Navigation */
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    background: var(--nav-bg);
+    padding: 10px 0;
+}
+
+nav ul li {
+    position: relative;
+}
+
+nav ul li a {
+    display: block;
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+nav ul li a:hover {
+    background: var(--nav-hover);
+    color: #ffcc00;
+}
+
+section li a:hover {
+    background: var(--nav-hover);
+    color: #ffcc00;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background: var(--nav-bg);
+    list-style: none;
+    width: 150px;
+    top: 100%;
+    left: 0;
+    
+}
+
+.dropdown-menu li a {
+    padding: 10px;
+    display: block;
+    color: white;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    
+}
+
+/* Main Layout (CSS Grid) */
+main {
+    display: grid;
+    grid-template-columns: 1fr 3fr; /* Sidebar + Content */
+    gap: 20px;
+    flex: 1;
+    padding: 20px;
+}
+
+
+/* Sidebar */
+aside {
+    background: #f4f4f4;
+    padding: 15px;
+}
+
+/* Content Section */
+section {
+    background: var(--section-bg);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease-in-out forwards;
+}
+
+/* Footer (Sticks at the Bottom) */
+footer {
+    background: var(--footer-bg);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: auto;
+}
+
+/* Smooth Animation for Sections */
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    main {
+        grid-template-columns: 1fr; /* Single column layout for mobile */
+    }
+}
+
+/*sign up styling*/
+
+main.login{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.login-box{
+    align-items: center;
+    width: 500px;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.input-box .input-field{
+    width: 100%;
+    height: 60px;
+    font-size: 17px;
+    padding: 0 25px;
+    margin-bottom: 15px;
+    border-radius: 30px;
+    border: none;
+    box-shadow: 0px 5px 10px 1px rgba(0,0,0, 0.05);
+    outline: none;
+    transition: .3s;
+    background-color: #afcded;
+}
+::placeholder{
+    font-weight: 500;
+    color: #222;
+}
+
+a{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: underline;
+}
+section a{
+    color: #555;
+}
+.input-submit{
+    position: relative;
+    margin: 20px auto 40px auto;
+    width: 50%;
+    height: 60px;
+    font-size: 17px;
+    padding: 0 25px;
+    margin-bottom: 30px;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+}
+.submit-btn {
+    width: 100%;
+    height: 60px;
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    padding: 0 25px;
+    cursor: pointer;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
+}
+
+.submit-btn:hover{
+    background: #000;
+}
+.sign-up-link{
+    text-align: center;
+    font-size: 15px;
+    margin-top: 20px;
+}
+.sign-up-link a{
+    color: #000;
+    font-weight: 600;
+}
+
+/* Sign up styling */
+.radio-container {
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    text-align: center;
+}
+
+/* Form text styling */
+.radio-container p {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Styling for the radio buttons and labels */
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+form .radio-option {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+form input[type="radio"] {
+    display: none;
+}
+
+/* Styling for radio labels */
+form .radio-option label {
+    position: relative;
+    padding-left: 40px; /* Make space for the custom "button" */
+    cursor: pointer;
+    font-size: 20px;
+    display: inline-block;
+    padding: 10px 20px;
+}
+
+/* Highlight the selected radio option */
+form input[type="radio"]:checked + label {
+    color: #0056b3; /* Change text color when selected */
+    border-radius: 5px; /* Optional: rounded corners for selected state */
+}
+
+/* Add a hover effect to the label */
+form label:hover {
+    color: #0056b3;
+}

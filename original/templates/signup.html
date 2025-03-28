@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="{{ url_for('static', filename='darkstyles.css') }}">
+
+</head>
+<body>
+    <header>
+        <h1>CSCB20 - Introduction to Databases and Web Applications</h1>
+        <br>
+        <h2>SIGN UP</h2>
+    </header>
+    <main class="login">
+        <div class="login-box">
+            <form action="/signup" method="POST">
+                <div class="input-box">
+                    <p>*All fields are required</p>
+                    <br>
+                    <input type="text" class="input-field" placeholder="Name" name="name" required>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="input-field" placeholder="Email" name="email" required>
+                </div>
+                <div class="input-box">
+                    <input type="password" class="input-field" placeholder="Password" name="password" required>
+                </div>
+                <div class="radio-container">
+                    <p>Select one that applies to you</p>
+                    <br>
+                    <input type="radio" id="student" name="user_type" value="student" required>
+                    <label for="student"><h3>Student</h3></label>
+                    <input type="radio" id="teacher" name="user_type" value="teacher" required>
+                    <label for="teacher"><h3>Teacher</h3></label>
+                </div>
+                <div class="input-submit">
+                    <button class="submit-btn" id="submit" type="submit">Create Account</button>
+                </div>
+            </form>
+            <div class="sign-up-link">
+                <p>Already have an account? <a href="login.html">Log In</a></p>
+            </div>
+        </div>
+    </main class="login">
+    <footer>
+        <p><a href="https://web.cs.toronto.edu/">Faculty of Computer Science</a></p>
+        <p>Site designed by Shabir Gazzaly</p>
+    </footer>
+</body>
+</html>
