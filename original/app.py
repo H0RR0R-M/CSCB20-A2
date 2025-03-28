@@ -6,19 +6,40 @@ from flask import get_flashed_messages
 app = Flask(__name__)
 
 # Configure the database (SQLite for simplicity)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///assignment3.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'  # Required for session management
 
 db = SQLAlchemy(app)
 
-# Define the User model
-class User(db.Model):
+# Define the Users model
+class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)  # Hashed password
     user_type = db.Column(db.String(10), nullable=False)  # "student" or "teacher"
+
+# Define the student_marks model
+class StudentMarks(db.Model):
+    student_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)  # Foreign key from user
+    module = db.Column(db.String(10), nullable=False)
+    marks = db.Column(db.Integer)
+    
+# Define the remark_requests model
+class RemarkRequests(db.Model):
+    student_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)  # Foreign key from user
+    module = db.Column(db.String(10), nullable=False)
+    status = db.Column(db.String(10), nullable=False)
+
+# Define the feedback model
+class Feedback(db.Model):
+    teacher_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)  # Foreign key from user
+    q1 = db.Column(db.String(250))
+    q2 = db.Column(db.String(250))
+    q3 = db.Column(db.String(250))
+    q4 = db.Column(db.String(250))
+
 
 # Initialize the database (Run once to create the tables)
 with app.app_context():
@@ -36,13 +57,13 @@ def signup():
         print(f"Name: {name}, Email: {email}, Password: {password}, User Type: {user_type}")  # For testing
 
         # Check if email already exists
-        existing_user = User.query.filter_by(email=email).first()
+        existing_user = Users.query.filter_by(email=email).first()
         if existing_user:
             flash("Email already registered!", "error")
             return redirect(url_for('signup'))
 
         # Add new user to the database
-        new_user = User(name=name, email=email, password=password, user_type=user_type)
+        new_user = Users(name=name, email=email, password=password, user_type=user_type)
         db.session.add(new_user)
         db.session.commit()
 
@@ -58,7 +79,7 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
-        user = User.query.filter_by(email=email).first()
+        user = Users.query.filter_by(email=email).first()
         
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id  # Store user session
