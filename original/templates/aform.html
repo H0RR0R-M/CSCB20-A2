@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="{{ url_for('static', filename='darkstyles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>CSCB20 - Introduction to Databases and Web Applications</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="dropdown">
+                    <a href="#">Course Material ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('static', filename='syllabus.pdf') }}" target="_blank">Syllabus</a></li>
+                        <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
+                        <li><a href="{{ url_for('labs') }}">Labs</a></li>
+                        <li><a href="{{ url_for('lecture_notes') }}">Lecture Notes</a></li>
+                    </ul>
+                </li>
+                <li><a href="https://piazza.com/class/m5fmz9kzjo83yk" target="_blank">Piazza</a></li>
+                <li><a href="https://markus2.utsc.utoronto.ca/courses" target="_blank">Markus</a></li>
+                <li><a href="{{ url_for('anon_feedback') }}">Anon Feedback</a></li>
+                <li><a href="{{ url_for('team') }}">Course Team</a></li>
+            </ul>
+        </nav>
+                        
+    </header>
+    <main>
+        <a><h3>Please provide feedback about this course. Identity will remain Anonymous</h3></a>
+        <form>
+            
+            <label for="fname">Course Code:</label><br>
+            <input type="text" id="fname" name="fname"><br><br>
+            <label for="fname">Instructor's name:</label><br>
+            <input type="text" id="fname" name="fname"><br><br>
+            <label for="lname">TA's name (if applicable):</label><br>
+            <input type="text" id="lname" name="lname"><br><br>
+            <label for="sem">Which semester is this course offered?</label>
+            <select name="Semester" id="sem">
+                <option value="Blank"></option>
+                <option value="S">Summer</option>
+                <option value="F">Fall</option>
+                <option value="W">Winter</option>                
+            </select>
+            <br><br>
+            <a>How satisfied are you with the knowledge you gained from the course?</a><br>            
+            <input type="radio" id="a" name="knowledge" value="a">
+            <label for="a">Very satisfied</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="a" name="knowledge" value="a">
+            <label for="a">Neither satisfied nor dissatisfied</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="a" name="knowledge" value="a">
+            <label for="a">Very dissatisfied</label>
+            <br><br>
+            <input type="checkbox" id="final" name="fin" value="fin">
+            <label for="fin"> I've answered to the best of my knowledge</label><br><br>
+            <input type="submit" value="Submit">
+        </form>        
+    </main>
+</body>
+</html>
