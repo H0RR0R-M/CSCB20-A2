@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="{{ url_for('static', filename='darkstyles.css') }}">
+
+    <script>
+
+        const userId = "{{ user_id }}";
+
+        let name = "";
+        let usertype = "";
+
+        fetch(`/user/${userId}`)
+        .then(response => response.json())
+        .then(user => {
+            name = user.name;
+            usertype = user.usertype;
+            fetch(`/navigation/${usertype}`)
+            .then(response => response.text())
+            .then(content => {
+                document.getElementById("navigation").innerHTML = content;
+            })
+            .catch(error => console.error("Error:", error));
+        })
+        .catch(error => console.error("Error:", error));
+
+        
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+        const hamburger = document.querySelector(".hamburger");
+        const navOverlay = document.querySelector(".nav-overlay");
+        const navLinks = document.querySelectorAll(".nav-overlay a, .nav a");
+        const container = document.querySelector("#container");
+        const pageNameContainer = document.getElementById("page-name-container");
+
+        const userId = "{{ user_id }}";
+
+        function loadRegradeRequest(container, assessment) {
+
+            
+            container.innerHTML = `
+            <div id = "regrade">
+                <button class="nav-btn"> Go back </button>
+            </div>
+            <br>
+            <h3 > ${assessment} Regrade </h3>
+                <br>
+                <div id = "regradepage">
+                    <section>
+                        <form>
+
+                            <label for="question">Select Questions </label>
+                            <select name="question" id="question">
+                                <option value="1"></option>
+                                <option value="S">2</option>
+                                <option value="F">3</option>
+                                <option value="W">4</option>                
+                            </select>
+
+                            <br><br>
+                            <label for="question">Describe Marking Errors</label>
+                            <br>
+                            <textarea style="width: 500px; height: 100px;" placeholder="Type here"></textarea>
+                            <br><br>
+                            
+                            <button class="nav-btn" > Submit </button>
+                        </form> 
+                    </section>
+                </div>
+            `;
+
+            //<input type="submit" value="Submit">
+
+            let module = ""
+            switch(assessment) {
+                case "Assignment 1":
+                    module = "A1"
+                    break;
+                case "Assignment 2":
+                    module = "A2"
+                    break;
+                case "Assignment 3":
+                    module = "A3"
+                    break;
+                case "Midterm":
+                    module = "midterm"
+                    break;
+                case "Final Exam":
+                    module = "final"
+                    break;
+            }
+
+            const submitButtons = document.querySelectorAll("#regradepage .nav-btn");
+            submitButtons.forEach((button) => {
+                button.addEventListener("click", function () {
+                    fetch(`/add_regrade/10/${module}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    })
+                    .then(response => response.json())
+                    .catch(error => console.error("Error:", error));
+
+                });
+
+            });
+
+            const backButtons = document.querySelectorAll("#regrade .nav-btn");
+            backButtons.forEach((button) => {
+                    button.addEventListener("click", function () {
+                        let page = "";
+                        switch (assessment) {
+                            case "Assignment 1":
+                                page = "assignment";
+                                break;
+                            case "Assignment 2":
+                                page = "assignment";
+                                break;
+                            case "Assignment 3":
+                                page = "assignment";
+                                break;
+                            case "Midterm":
+                                page = "midterm";
+                                break;
+                            case "Final":
+                                page = "final";
+                                break;
+                            default:
+                                page = "";
+                                break;
+                        }
+
+                        loadMarkPage(container, page);
+                    });
+
+                });
+
+            //<input type="text" id="name" name="name" rows="4" cols="30" placeholder="Type here">
+        }
+
+        function getGrade(assessment) {
+
+            fetch(`/marks/${userId}/${assessment}`)
+            .then(response => response.text())
+            .then(markdata => {
+                const mark = markdata.mark;
+            })
+            .catch(error => console.error("Error:", error));
+
+            if (mark == null) {
+                return "Not Graded Yet";
+            }
+            return mark;
+        }
+
+        function loadMarkPage(container, page) {
+
+            fetch(`/allmarks/${userId}`)
+            .then(response => response.json())
+            .then(markdata => {
+                let mark1 = markdata.a1;
+                let mark2 = markdata.a2;
+                let mark3 = markdata.a3;
+                let markmid = markdata.midterm;
+                let markfin = markdata.final;
+
+                if (mark1 == -1) {mark1 = "Not Graded Yet"; }
+                if (mark2 == -1) {mark2 = "Not Graded Yet"; }
+                if (mark3 == -1) {mark3 = "Not Graded Yet"; }
+                if (markmid == -1) {markmid = "Not Graded Yet"; }
+                if (markfin == -1) {markfin = "Not Graded Yet"; }
+
+                switch (page) {
+                    case "assignment":
+                        container.innerHTML = `
+                        <div = id="btn">
+                            <section>
+                                <h1> Assignment 1 Grades </h1>
+                                <br>
+                                <h5> Mark: ${mark1}</h5>
+                                <br>
+                                <h5> Feedback: </h5>
+                                <br>
+                                <p> no feedback </p>
+                                <br>
+                                <button class="nav-btn" data-assessment = "Assignment 1"> Request Regrade </button>
+                            </section>
+                            <br>
+                            <section>
+                                <h1> Assignment 2 Grades </h1>
+                                <br>
+                                <h5> Mark: ${mark2} </h5>
+                                <br>
+                                <h5> Feedback: </h5>
+                                <br>
+                                <p> no feedback </p>
+                                <br>
+                                <button class="nav-btn" data-assessment = "Assignment 2" > Request Regrade </button>
+                            </section>
+                            <br>
+                            <section>
+                                <h1> Assignment 3 Grades </h1>
+                                <br>
+                                <h5> Mark: ${mark3}  </h5>
+                                <br>
+                                <h5> Feedback: </h5>
+                                <br>
+                                <p> no feedback </p>
+                                <br>
+                                <button class="nav-btn" data-assessment = "Assignment 3" > Request Regrade </button>
+                            </section>
+                        </div>
+                        `;
+                        break;
+                    case "tutorial":
+                        container.innerHTML = `
+                        <section>
+                            <h1> Tutorial 1 </h1>
+                            <br>
+                            <h5> Attended: </h5>
+                        </section>
+                        <br>
+                        <section>
+                            <h1> Tutorial 2 </h1>
+                            <br>
+                            <h5> Attended: </h5>
+                        </section>
+                        <br>
+                        <section>
+                            <h1> Tutorial 3 </h1>
+                            <br>
+                            <h5> Attended: </h5>
+                        </section>
+                        <br>
+                        <section>
+                            <h1> Tutorial 4 </h1>
+                            <br>
+                            <h5> Attended: </h5>
+                        </section>
+                        <br>
+                        <section>
+                            <h1> Tutorial 5 </h1>
+                            <br>
+                            <h5> Attended: </h5>
+                        </section>
+                        <br>
+                        <section>
+                            <h1> Tutorial 6 </h1>
+                            <br>
+                            <h5> Attended: </h5>
+                        </section>
+                        <br>
+                        `;
+                        break;
+                    case "midterm":
+
+                        container.innerHTML = `
+                        <div = id="btn">
+                            <section>
+                                <h1> Midterm Exam Grades </h1>
+                                <br>
+                                <h5> Mark: ${markmid} </h5>
+                                <br>
+                                <h5> Feedback: </h5>
+                                <br>
+                                <p> some feedback </p>
+                                <br>
+                                <button class="nav-btn" data-assessment = "Midterm"> Request Regrade </button>
+                            </section>
+                        </div>
+                        `;
+                        break;
+                    case "final":
+
+                        container.innerHTML = `
+                        <div = id="btn">
+                            <section>
+                                <h1> Final Exam Grades </h1>
+                                <br>
+                                <h5> Mark: ${markfin} </h5>
+                                <br>
+                                <h5> Feedback: </h5>
+                                <br>
+                                <p> some feedback </p>
+                                <br>
+                                <button class="nav-btn" data-assessment = "Final Exam"> Request Regrade </button>
+                            </section>
+                        </div>
+                        `;
+                        break;
+                    default:
+                        break;
+                }
+
+                const regradeButtons = document.querySelectorAll("#btn .nav-btn");
+                    regradeButtons.forEach((button) => {
+                        button.addEventListener("click", function () {
+                            const assessment = button.getAttribute("data-assessment");
+                            loadRegradeRequest(container, assessment);
+                        });
+                    });
+
+            })
+            .catch(error => console.error("Error:", error));
+
+
+        }
+
+        
+
+
+        const markButtons = document.querySelectorAll("#mark .nav-btn");
+            markButtons.forEach((button) => {
+                button.addEventListener("click", function () {
+                    const page = button.getAttribute("data-mark");
+                    const innercontainer = document.querySelector("#innercontainer");
+                    loadMarkPage(innercontainer, page);
+                });
+            });
+
+        });
+
+
+    </script>
+</head>
+<body>
+    <header id="navigation">
+                        
+    </header>    
+    <main>
+        <div id="container">
+            <section>
+                <div class="nav-buttons" id = "mark">
+                    <button class="nav-btn" data-mark="assignment">Assignments</button>
+                    <button class="nav-btn" data-mark="tutorial">Tutorials</button>
+                    <button class="nav-btn" data-mark="midterm">Midterm</button>
+                    <button class="nav-btn" data-mark="final">Final</button>
+                </div>
+                <br/>
+                <div id = "innercontainer">
+                    <section> 
+                        View your marks
+                    </section>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

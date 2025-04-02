@@ -6,28 +6,32 @@
     <title>Assignments</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="{{ url_for('static', filename='darkstyles.css') }}">
+
+    <script>
+        const userId = "{{ user_id }}";
+
+        let name = "";
+        let usertype = "";
+
+        fetch(`/user/${userId}`)
+        .then(response => response.json())
+        .then(user => {
+            name = user.name;
+            usertype = user.usertype;
+            fetch(`/navigation/${usertype}`)
+            .then(response => response.text())
+            .then(content => {
+                document.getElementById("navigation").innerHTML = content;
+            })
+            .catch(error => console.error("Error:", error));
+        })
+        .catch(error => console.error("Error:", error));
+
+
+    </script>
 </head>
 <body>
-    <header>
-        <h1>CSCB20 - Introduction to Databases and Web Applications</h1>
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('index') }}">Home</a></li>
-                <li class="dropdown">
-                    <a href="#">Course Material ▾</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('static', filename='syllabus.pdf') }}" target="_blank">Syllabus</a></li>
-                        <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
-                        <li><a href="{{ url_for('labs') }}">Labs</a></li>
-                        <li><a href="{{ url_for('lecture_notes') }}">Lecture Notes</a></li>
-                    </ul>
-                </li>
-                <li><a href="https://piazza.com/class/m5fmz9kzjo83yk" target="_blank">Piazza</a></li>
-                <li><a href="https://markus2.utsc.utoronto.ca/courses" target="_blank">Markus</a></li>
-                <li><a href="{{ url_for('anon_feedback') }}">Anon Feedback</a></li>
-                <li><a href="{{ url_for('team') }}">Course Team</a></li>
-            </ul>
-        </nav>
+    <header id="navigation">
                         
     </header>    
     <main>

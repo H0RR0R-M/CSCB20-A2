@@ -1,0 +1,20 @@
+<h1>CSCB20 - Introduction to Databases and Web Applications</h1>
+<nav>
+    <ul>
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li class="dropdown">
+            <a href="#">Course Material ▾</a>
+            <ul class="dropdown-menu">
+                <li><a href="{{ url_for('static', filename='syllabus.pdf') }}" target="_blank">Syllabus</a></li>
+                <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
+                <li><a href="{{ url_for('labs') }}">Labs</a></li>
+                <li><a href="{{ url_for('lecture_notes') }}">Lecture Notes</a></li>
+            </ul>
+        </li>
+        <li><a href="https://piazza.com/class/m5fmz9kzjo83yk" target="_blank">Piazza</a></li>
+        <li><a href="https://markus2.utsc.utoronto.ca/courses" target="_blank">Markus</a></li>
+        <li><a href="{{ url_for('anon_feedback') }}">Anon Feedback</a></li>
+        <li><a href="{{ url_for('team') }}">Course Team</a></li>
+        <li><a href="{{ url_for('studentmark') }}">Marks</a></li>
+    </ul>
+ </nav>
