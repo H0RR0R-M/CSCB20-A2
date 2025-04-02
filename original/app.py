@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session , jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import get_flashed_messages
@@ -22,14 +22,14 @@ class Users(db.Model):
 
 # Define the student_marks model
 class StudentMarks(db.Model):
-    student_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)  # Foreign key from user
-    module = db.Column(db.String(10), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)  # Foreign key from user 
+    module = db.Column(db.String(10), nullable=False, primary_key=True)
     marks = db.Column(db.Integer)
     
 # Define the remark_requests model
 class RemarkRequests(db.Model):
     student_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)  # Foreign key from user
-    module = db.Column(db.String(10), nullable=False)
+    module = db.Column(db.String(10), nullable=False, primary_key=True)
     status = db.Column(db.String(10), nullable=False)
 
 # Define the feedback model
@@ -100,28 +100,47 @@ def index():
         return redirect(url_for('login'))  # Redirect to login page if not logged in
 
     # Render your index page if the user is logged in
-    return render_template('index.html')  # Ensure you have an index.html template
+    return render_template('index.html', user_id=session.get('user_id'))  # Ensure you have an index.html template
 
 # Routes for new pages
 @app.route('/assignments')
 def assignments():
-    return render_template('assignments.html')
+    return render_template('assignments.html', user_id=session.get('user_id'))
 
 @app.route('/labs')
 def labs():
-    return render_template('labs.html')
+    return render_template('labs.html', user_id=session.get('user_id'))
 
 @app.route('/lecture_notes')
 def lecture_notes():
-    return render_template('lecture_notes.html')
+    return render_template('lecture_notes.html', user_id=session.get('user_id'))
 
 @app.route('/anon_feedback')
 def anon_feedback():
-    return render_template('aform.html')
+    return render_template('aform.html', user_id=session.get('user_id'))
 
 @app.route('/team')
 def team():
-    return render_template('team.html')
+    return render_template('team.html', user_id=session.get('user_id'))
+
+@app.route('/studentmark')
+def studentmark():
+    return render_template('studentmark.html', user_id=session.get('user_id'))
+
+@app.route('/mark_list')
+def mark_list():
+    return render_template('marklist.html', user_id=session.get('user_id'))
+
+@app.route('/regrades')
+def regrades():
+    return render_template('regrades.html', user_id=session.get('user_id'))
+
+@app.route('/navigation/<usertype>')
+def navigation(usertype):
+    if (usertype == "student"):
+        return render_template('studentnavigation.html', user_id=session.get('user_id'))
+    elif (usertype == "teacher"):
+        return render_template('teachernavigation.html', user_id=session.get('user_id'))
 
 
 # Logout route
@@ -135,6 +154,120 @@ def logout():
 @app.route('/success')
 def success():
     return "Signup successful! You can now log in."
+
+
+@app.route("/allstudents", methods=["GET"])
+def allstudents():
+    students = Users.query.filter_by(user_type="student").all()
+
+    student_list = []
+    for student in students:
+        student_list.append({"id": student.id, "name": student.name, "email": student.email})
+
+    return jsonify(student_list)
+
+@app.route("/allregrades", methods=["GET"])
+def allregrades():
+    regrades = RemarkRequests.query.filter_by(status="Pending").all()
+
+    regrade_list = []
+    for regrade in regrades:
+        regrade_list.append({"id": regrade.student_id, "module": regrade.module, "status": regrade.status})
+
+    return jsonify(regrade_list)
+
+
+
+@app.route("/marks/<studentid>/<assessment>", methods=["GET"])
+def marks(studentid, assessment):
+    mark = StudentMarks.query.filter_by(student_id=int(studentid), module=assessment).first()
+
+    markdata = {}
+
+    if (mark == None):
+        markdata = {"id": None, "assessment":None, "mark":-1}
+    else:
+        markdata = {"id": mark.student_id, "assessment":mark.module, "mark":mark.marks}
+
+    return jsonify(markdata)
+
+@app.route("/allmarks/<studentid>", methods=["GET"])
+def allmarks(studentid):
+    marks = StudentMarks.query.filter_by(student_id=int(studentid)).all()
+
+    markdata = {}
+
+    mark1 = -1
+    mark2 = -1
+    mark3 = -1
+    mark4 = -1
+    mark5 = -1
+
+    if (marks != None):
+        for mark in marks:
+            if (mark.module == "A1"):
+                mark1 = mark.marks
+            if (mark.module == "A2"):
+                mark2 = mark.marks
+            if (mark.module == "A3"):
+                mark3 = mark.marks
+            if (mark.module == "midterm"):
+                mark4 = mark.marks
+            if (mark.module == "final"):
+                mark5 = mark.marks
+
+    markdata = {"a1": mark1, "a2": mark2, "a3": mark3, "midterm": mark4, "final": mark5}
+
+    return jsonify(markdata)
+
+
+@app.route("/user/<userid>", methods=["GET"])
+def user(userid):
+    currentuser = Users.query.filter_by(id=int(userid)).first()
+
+    userdata = {"id": currentuser.id, "name":currentuser.name, "usertype":currentuser.user_type} 
+
+    return jsonify(userdata)
+
+@app.route("/add_regrade/<studentid>/<assessment>", methods=["POST"])
+def add_regrade(studentid, assessment):
+    newremark = RemarkRequests(student_id = int(studentid), module = assessment, status = "Pending")
+    db.session.add(newremark)  
+    db.session.commit()
+    return jsonify({"status": "success"})
+
+@app.route("/add_mark/<studentid>/<assessment>/<newmark>", methods=["POST"])
+def add_mark(studentid, assessment, newmark):
+    newmark = StudentMarks(student_id = int(studentid), module = assessment, marks = int(newmark))
+    db.session.add(newmark)  
+    db.session.commit()
+    return jsonify({"status": "success"})
+
+@app.route("/dorequest/<studentid>/<module>/<status>", methods=["PUT"])
+def dorequest(studentid, module, status):
+    remark = RemarkRequests.query.filter_by(student_id=int(studentid), module=module)
+    remark.status = status
+    db.session.commit()
+    return jsonify({"status": "success"})
+
+@app.route("/update_mark/<studentid>/<module>/<mark>", methods=["PUT"])
+def update_mark(studentid, module, mark):
+    grade = StudentMarks.query.filter_by(student_id=int(studentid), module=module).first()
+    db.session.refresh(grade)
+    grade.marks = int(mark)
+
+    db.session.commit()
+    return jsonify({"status": "success"})
+
+@app.route("/view_marks", methods=["GET"])
+def view_marks():
+    marks = StudentMarks.query.all()
+    mark_list = [{"student_id": m.student_id, "module": m.module, "mark": m.marks} for m in marks]
+    return jsonify(mark_list)
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
