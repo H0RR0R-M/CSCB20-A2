@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="{{ url_for('static', filename='darkstyles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>CSCB20 - Introduction to Databases and Web Applications</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="dropdown">
+                    <a href="#">Course Material ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('static', filename='syllabus.pdf') }}" target="_blank">Syllabus</a></li>
+                        <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
+                        <li><a href="{{ url_for('labs') }}">Labs</a></li>
+                        <li><a href="{{ url_for('lecture_notes') }}">Lecture Notes</a></li>
+                    </ul>
+                </li>
+                <li><a href="https://piazza.com/class/m5fmz9kzjo83yk" target="_blank">Piazza</a></li>
+                <li><a href="https://markus2.utsc.utoronto.ca/courses" target="_blank">Markus</a></li>
+                <li><a href="{{ url_for('anon_feedback') }}">Anon Feedback</a></li>
+                <li><a href="{{ url_for('team') }}">Course Team</a></li>
+            </ul>
+        </nav>
+                        
+    </header>
+    <main>
+        <a><h3>Please provide feedback about this course. Identity will remain Anonymous</h3></a>
+        <form action="/anon_feedback" method="POST">
+            <label for="IID">Please select your instructor's name</label>
+            <select name="instructor" id="IID" required>
+                <option value="Blank"></option>
+                <option value="5">Purva Gawde</option>
+                <option value="6">Brian Harrington</option>
+                <option value="7">Abbas Attarwala</option>                
+            </select>
+            <br><br>
+            <label for="q1">What do you like about the instructor’s teaching?</label>
+            <textarea id="q1" name="q1" rows="4" cols="50" required></textarea>&nbsp;&nbsp;&nbsp;&nbsp;            
+            <label for="q2">What do you recommend the instructor to do to improve their teaching?</label>
+            <textarea id="q2" name="q2" rows="4" cols="50" required></textarea>&nbsp;&nbsp;&nbsp;&nbsp;
+            <label for="q3">What do you like about the labs?</label>
+            <textarea id="q3" name="q3" rows="4" cols="50" required></textarea>&nbsp;&nbsp;&nbsp;&nbsp;
+            <label for="q4">What do you recommend the lab instructors to do to improve their lab teaching?</label>
+            <textarea id="q4" name="q4" rows="4" cols="50" required></textarea>&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit" value="Submit">
+        </form>        
+    </main>
+</body>
+</html>
