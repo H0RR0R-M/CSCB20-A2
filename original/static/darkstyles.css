@@ -145,18 +145,3 @@ footer {
         grid-template-columns: 1fr; /* Single column layout for mobile */
     }
 }
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    border: 1px solid black;
-    padding: 10px;
-    text-align: left;
-}
-
-th {
-    background-color: #f2f2f2;
-}
