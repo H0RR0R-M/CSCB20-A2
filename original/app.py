@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import get_flashed_messages
 
+
 app = Flask(__name__)
 
 # Configure the database (SQLite for simplicity)
@@ -44,6 +45,35 @@ class Feedback(db.Model):
 # Initialize the database (Run once to create the tables)
 with app.app_context():
     db.create_all()
+    
+# Route for student feedbacks (Instructors only)
+@app.route('/feedbacks')
+def feedbacks():
+    if 'user_id' not in session or session.get('user_type') != 'instructor':
+            return redirect(url_for('login'))    
+    df = Feedback.query.filter_by(teacher_id=session['user_id']).all()
+    print("Feedback Entries:", df)
+    return render_template('feedbacks.html', df=df)
+
+# Route for Anonymous feedback
+@app.route('/anon_feedback', methods=['GET', 'POST'])
+def anon_feedback():
+    if request.method == 'POST':
+        IID = request.form['instructor']
+        qstn1 = request.form['q1']
+        qstn2 = request.form['q2']
+        qstn3 = request.form['q3']
+        qstn4 = request.form['q4']       
+
+        # Add feedback to database
+        new_feedback = Feedback(teacher_id=IID, q1=qstn1, q2=qstn2, q3=qstn3, q4=qstn4)
+        db.session.add(new_feedback)
+        db.session.commit()
+
+        
+        return redirect(url_for('anon_feedback'))
+
+    return render_template('feedback.html')
 
 # Route for signup page
 @app.route('/signup', methods=['GET', 'POST'])
@@ -84,7 +114,13 @@ def login():
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id  # Store user session
             flash("Login successful!", "success")
-            return redirect(url_for('index'))  # Redirect after login
+            if user.user_type == 'student':
+                return redirect(url_for('index'))  # Redirect after login
+            else:
+                return redirect(url_for('indexI'))  # Redirect after login
+           
+            
+            
         else:
             flash("Invalid email or password!", "error")
             return redirect(url_for('login'))
@@ -102,6 +138,15 @@ def index():
     # Render your index page if the user is logged in
     return render_template('index.html')  # Ensure you have an index.html template
 
+@app.route('/indexI')
+def indexI():
+    if 'user_id' not in session:
+        flash("You must log in first.", "warning")
+        return redirect(url_for('login'))  # Redirect to login page if not logged in
+
+    # Render your index page if the user is logged in
+    return render_template('indexI.html')  # Ensure you have an index.html template
+
 # Routes for new pages
 @app.route('/assignments')
 def assignments():
@@ -114,10 +159,6 @@ def labs():
 @app.route('/lecture_notes')
 def lecture_notes():
     return render_template('lecture_notes.html')
-
-@app.route('/anon_feedback')
-def anon_feedback():
-    return render_template('aform.html')
 
 @app.route('/team')
 def team():
@@ -138,3 +179,6 @@ def success():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+  
+    

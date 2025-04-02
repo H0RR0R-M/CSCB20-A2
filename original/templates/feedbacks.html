@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="{{ url_for('static', filename='darkstyles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>CSCB20 - Introduction to Databases and Web Applications</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('indexI') }}">Home</a></li>
+                <li class="dropdown">
+                    <a href="#">Course Material ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('static', filename='syllabus.pdf') }}" target="_blank">Syllabus</a></li>
+                        <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
+                        <li><a href="{{ url_for('labs') }}">Labs</a></li>
+                        <li><a href="{{ url_for('lecture_notes') }}">Lecture Notes</a></li>
+                    </ul>
+                </li>
+                <li><a href="https://piazza.com/class/m5fmz9kzjo83yk" target="_blank">Piazza</a></li>
+                <li><a href="https://markus2.utsc.utoronto.ca/courses" target="_blank">Markus</a></li>
+                <li><a href="{{ url_for('feedbacks') }}">Student Feedbacks</a></li>
+                <li><a href="{{ url_for('team') }}">Course Team</a></li>
+            </ul>
+        </nav>
+                        
+    </header>    
+    <main>
+        <table border="1">
+            <tr>
+                <th>Q1</th>
+                <th>Q2</th>
+                <th>Q3</th>
+                <th>Q4</th>
+            </tr>
+            {% for feedback in df %}
+            <tr>
+                <td>{{ feedback.q1 }}</td>
+                <td>{{ feedback.q2 }}</td>
+                <td>{{ feedback.q3 }}</td>
+                <td>{{ feedback.q4 }}</td>  
+            </tr>
+            {% endfor %}
+        </table>
+        {% block content %}
+            <h1 class="title">{% block title %} Feedbacks {% endblock %}</h1>
+            <div class="content">
+                {% for feedback in df %}
+                    <div class="feedbacks">                        
+                        <b>
+                            <p class="name">{{ feedback.q1 }} {{ feedback.q2 }} {{ feedback.q3 }} {{ feedback.q4 }}</p>
+                        </b>                  
+                        
+                    </div>
+                {% endfor %}
+            </div>
+        {% endblock %}
+    </main>
+    
+</body>
+</html>
