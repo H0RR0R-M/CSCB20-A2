@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="{{ url_for('static', filename='darkstyles.css') }}">
+
+    <script>
+        const userId = "{{ user_id }}";
+
+        let name = "";
+        let usertype = "";
+
+        fetch(`/user/${userId}`)
+        .then(response => response.json())
+        .then(user => {
+            name = user.name;
+            usertype = user.usertype;
+            fetch(`/navigation/${usertype}`)
+            .then(response => response.text())
+            .then(content => {
+                document.getElementById("navigation").innerHTML = content;
+            })
+            .catch(error => console.error("Error:", error));
+        })
+        .catch(error => console.error("Error:", error));
+
+
+    </script>
+</head>
+<body>
+    <header id="navigation">
+                        
+    </header>    
+    <main>
+        <section id="assign">
+            <h3>Assignments</h3>
+            <br>
+            <h4>Assignments will cover material from 2–3 weeks and will be worth 33% of the final grade</h4>           
+        </section>        
+        <section id="assignment1">
+            <h3>Assignment 1 (8%)</h3>
+            <br>
+            <li><a href="assignment.pdf">Assignment 1</a></li>            
+        </section>
+        <section id="assignment2">
+            <h3>Assignment 2 (10%)</h3>
+            <br>
+            <li><a href="assignment.pdf">Assignment 2</a></li>
+        </section>
+        <section id="assignment3">
+            <h3>Assignment 3 (15%)</h3>
+            <br>
+            <li><a href="assignment.pdf">Assignment 3</a></li>
+        </section>
+    </main>
+</body>
+</html>

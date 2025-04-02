@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="{{ url_for('static', filename='darkstyles.css') }}">
+
+    <script>
+        const userId = "{{ user_id }}";
+
+        let name = "";
+        let usertype = "";
+
+        fetch(`/user/${userId}`)
+        .then(response => response.json())
+        .then(user => {
+            name = user.name;
+            usertype = user.usertype;
+            fetch(`/navigation/${usertype}`)
+            .then(response => response.text())
+            .then(content => {
+                document.getElementById("navigation").innerHTML = content;
+            })
+            .catch(error => console.error("Error:", error));
+        })
+        .catch(error => console.error("Error:", error));
+
+    </script>
+</head>
+<body>
+    <header id="navigation">
+                        
+    </header>
+    <main>
+        <a><h3>Please provide feedback about this course. Identity will remain Anonymous</h3></a>
+        <form>
+            
+            <label for="fname">Course Code:</label><br>
+            <input type="text" id="fname" name="fname"><br><br>
+            <label for="fname">Instructor's name:</label><br>
+            <input type="text" id="fname" name="fname"><br><br>
+            <label for="lname">TA's name (if applicable):</label><br>
+            <input type="text" id="lname" name="lname"><br><br>
+            <label for="sem">Which semester is this course offered?</label>
+            <select name="Semester" id="sem">
+                <option value="Blank"></option>
+                <option value="S">Summer</option>
+                <option value="F">Fall</option>
+                <option value="W">Winter</option>                
+            </select>
+            <br><br>
+            <a>How satisfied are you with the knowledge you gained from the course?</a><br>            
+            <input type="radio" id="a" name="knowledge" value="a">
+            <label for="a">Very satisfied</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="a" name="knowledge" value="a">
+            <label for="a">Neither satisfied nor dissatisfied</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="a" name="knowledge" value="a">
+            <label for="a">Very dissatisfied</label>
+            <br><br>
+            <input type="checkbox" id="final" name="fin" value="fin">
+            <label for="fin"> I've answered to the best of my knowledge</label><br><br>
+            <input type="submit" value="Submit">
+        </form>        
+    </main>
+</body>
+</html>
